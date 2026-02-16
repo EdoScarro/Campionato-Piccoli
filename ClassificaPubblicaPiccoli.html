@@ -1,0 +1,302 @@
+<head>
+  <meta charset="UTF-8">
+  <title>Classifica Campionato Piccoli</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  font-family: system-ui, sans-serif;
+  background-color: #C62828;
+  color: #FFFFFF;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  color: #FFFFFF;
+  text-shadow:
+    -1px -1px 0 #2F2F2F,
+     1px -1px 0 #2F2F2F,
+    -1px  1px 0 #2F2F2F,
+     1px  1px 0 #2F2F2F;
+  margin-bottom: 20px;
+}
+
+/* Tabelle principali */
+.tabella-numerica, .tabella {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 40px;
+}
+
+.tabella-numerica th, .tabella th {
+  background-color: #D0D0D0;
+  color: #2F2F2F;
+  padding: 10px;
+}
+
+.tabella-numerica td, .tabella td {
+  background-color: #F2F2F2;
+  color: #2F2F2F;
+  padding: 10px;
+  text-align: center;
+}
+
+/* Ripristina i bordi della tabella grafica */
+.tabella th,
+.tabella td {
+  border: 1px solid #DDDDDD;
+}
+
+/* Ripristina i bordi delle celle piccole */
+#riga-punti .cella-punto {
+  border: 1px solid #DDDDDD !important;
+}
+
+
+/* Celle attive */
+.attivo {
+  background-color: #2E7D32 !important;
+  border-color: #1B5E20 !important;
+}
+
+.titolo-attivo {
+  color: #2E7D32 !important;
+  font-weight: bold;
+}
+
+.cella-numerica-attiva {
+  color: #2E7D32 !important;
+  font-weight: bold;
+}
+
+/* --- SEZIONI RISULTATI E MARCATORI --- */
+.extra-container {
+  display: flex;
+  justify-content: center;     /* centra le tabelle */
+  align-items: flex-start;     /* allinea le tabelle in alto */
+  gap: 40px;                   /* spazio tra le due tabelle */
+  margin-top: 40px;
+}
+
+.tabella-extra {
+  flex: 1 1 auto;          /* le due tabelle ora hanno la stessa larghezza */
+  max-width: 500px;        /* opzionale: evita che si allarghino troppo */
+  border-collapse: collapse;
+  background-color: #FFFFFF;
+  color: #2F2F2F;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+
+.tabella-extra th {
+  background-color: #D0D0D0;
+  padding: 10px;
+  text-align: center;
+}
+
+.tabella-extra td {
+  background-color: #F2F2F2;
+  padding: 10px;
+  border-bottom: 1px solid #CCCCCC;
+  text-align: center;
+}
+
+/* Stile per la parte testuale (nomi squadre) */
+.risultato-squadre {
+  color: #2F2F2F;
+  font-weight: 500;
+}
+
+/* Stile per il risultato numerico (grigio scuro) */
+.risultato-gol {
+  color: #2F2F2F; /* grigio scuro */
+  font-weight: bold;
+  background-color: #E0E0E0; /* grigio chiarissimo */
+  padding: 3px 6px;
+  border-radius: 4px;
+  display: inline-block;
+  margin: 0 6px;
+}
+
+</style>
+
+</head>
+<body>
+
+<div style="text-align: center; margin-bottom: 20px;">
+  <img src="logo-campionato.png" alt="Logo Campionato" style="width: 180px; height: auto;">
+</div>
+
+<h1>Classifica Campionato</h1>
+
+<!-- CLASSIFICA NUMERICA -->
+<table class="tabella-numerica">
+  <thead>
+    <tr>
+      <th>Squadra</th>
+      <th>PG</th>
+      <th>V</th>
+      <th>P</th>
+      <th>S</th>
+      <th>PT</th>
+      <th>GF</th>
+      <th>GS</th>
+    </tr>
+  </thead>
+  <tbody id="classifica-numerica-body"></tbody>
+</table>
+
+<!-- CLASSIFICA GRAFICA -->
+<table class="tabella">
+
+  <colgroup>
+    <col span="1" style="width: 200px;">
+    <col span="3" style="width: 60px;">
+    <col span="2" style="width: 60px;">
+    <col span="2" style="width: 60px;">
+    <col span="2" style="width: 60px;">
+    <col span="3" style="width: 60px;">
+  </colgroup>
+
+  <tr>
+    <th>Squadra</th>
+    <th id="titolo-pos5" colspan="3">5ª posizione</th>
+    <th id="titolo-pos4" colspan="2">4ª posizione</th>
+    <th id="titolo-pos3" colspan="2">3ª posizione</th>
+    <th id="titolo-pos2" colspan="2">2ª posizione</th>
+    <th id="titolo-pos1" colspan="3">1ª posizione</th>
+  </tr>
+
+  <tr id="riga-punti">
+    <td>Casa del Giovane</td>
+
+    <td class="cella-punto"></td>
+    <td class="cella-punto"></td>
+    <td class="cella-punto"></td>
+
+    <td class="cella-punto"></td>
+    <td class="cella-punto"></td>
+
+    <td class="cella-punto"></td>
+    <td class="cella-punto"></td>
+
+    <td class="cella-punto"></td>
+    <td class="cella-punto"></td>
+
+    <td class="cella-punto"></td>
+    <td class="cella-punto"></td>
+    <td class="cella-punto"></td>
+  </tr>
+
+</table>
+
+<!-- RISULTATI + MARCATORI -->
+<div class="extra-container">
+
+  <!-- RISULTATI PARTITE (Opzione B) -->
+  <table class="tabella-extra">
+    <thead>
+      <tr><th>Risultati Partite</th></tr>
+    </thead>
+    <tbody id="tabella-risultati"></tbody>
+  </table>
+
+  <!-- CLASSIFICA MARCATORI (Opzione A) -->
+  <table class="tabella-extra">
+    <thead>
+      <tr>
+        <th>Giocatore</th>
+        <th>Gol</th>
+      </tr>
+    </thead>
+    <tbody id="tabella-marcatori"></tbody>
+  </table>
+
+</div>
+<script>
+/* --- CLASSIFICA NUMERICA --- */
+const salvata = localStorage.getItem("classifica_campionato2");
+let squadra = salvata ? JSON.parse(salvata)[0] : null;
+
+if (squadra) {
+  const tbody = document.getElementById("classifica-numerica-body");
+  const punti = squadra.vittorie * 3 + squadra.pareggi;
+
+  tbody.innerHTML = `
+    <tr>
+      <td>${squadra.nome}</td>
+      <td>${squadra.partite}</td>
+      <td>${squadra.vittorie}</td>
+      <td>${squadra.pareggi}</td>
+      <td>${squadra.sconfitte}</td>
+      <td class="pt-cell">${punti}</td>
+      <td>${squadra.goalFatti}</td>
+      <td>${squadra.goalSubiti}</td>
+    </tr>
+  `;
+
+  document.querySelector(".pt-cell").classList.add("cella-numerica-attiva");
+}
+
+/* --- CLASSIFICA GRAFICA --- */
+let punti = squadra ? squadra.vittorie * 3 + squadra.pareggi : 0;
+
+const celle = document.querySelectorAll("#riga-punti .cella-punto");
+for (let i = 0; i < punti && i < celle.length; i++) celle[i].classList.add("attivo");
+
+const posizioni = [
+  { id: "titolo-pos5", celle: 3 },
+  { id: "titolo-pos4", celle: 2 },
+  { id: "titolo-pos3", celle: 2 },
+  { id: "titolo-pos2", celle: 2 },
+  { id: "titolo-pos1", celle: 3 }
+];
+
+let puntiRimasti = punti;
+let indicePosizioneAttiva = -1;
+
+for (let i = 0; i < posizioni.length; i++) {
+  if (puntiRimasti > 0) {
+    indicePosizioneAttiva = i;
+    puntiRimasti -= posizioni[i].celle;
+  } else break;
+}
+
+/* Caso speciale: 0 punti → evidenzia 5ª posizione */
+if (punti === 0) {
+  document.getElementById("titolo-pos5").classList.add("titolo-attivo");
+}
+
+if (indicePosizioneAttiva >= 0)
+  document.getElementById(posizioni[indicePosizioneAttiva].id).classList.add("titolo-attivo");
+
+/* --- RISULTATI PARTITE (Opzione B) --- */
+const risultati = JSON.parse(localStorage.getItem("risultati_partite")) || [];
+const tabRis = document.getElementById("tabella-risultati");
+
+tabRis.innerHTML = risultati
+  .map(r => `
+    <tr>
+      <td>
+        <span class="risultato-squadre">${r.casa}</span>
+        <span class="risultato-gol">${r.golCasa} - ${r.golTrasferta}</span>
+        <span class="risultato-squadre">${r.trasferta}</span>
+      </td>
+    </tr>
+  `)
+  .join("");
+
+/* --- CLASSIFICA MARCATORI (Opzione A) --- */
+const marcatori = JSON.parse(localStorage.getItem("classifica_marcatori")) || [];
+const tabMarc = document.getElementById("tabella-marcatori");
+
+tabMarc.innerHTML = marcatori
+  .sort((a, b) => b.gol - a.gol)
+  .map(m => `<tr><td>${m.nome}</td><td>${m.gol}</td></tr>`)
+  .join("");
+</script>
+
+</body>
+</html>
