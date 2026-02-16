@@ -53,7 +53,6 @@ h1 {
   border: 1px solid #DDDDDD !important;
 }
 
-
 /* Celle attive */
 .attivo {
   background-color: #2E7D32 !important;
@@ -73,22 +72,21 @@ h1 {
 /* --- SEZIONI RISULTATI E MARCATORI --- */
 .extra-container {
   display: flex;
-  justify-content: center;     /* centra le tabelle */
-  align-items: flex-start;     /* allinea le tabelle in alto */
-  gap: 40px;                   /* spazio tra le due tabelle */
+  justify-content: center;
+  align-items: flex-start;
+  gap: 40px;
   margin-top: 40px;
 }
 
 .tabella-extra {
-  flex: 1 1 auto;          /* le due tabelle ora hanno la stessa larghezza */
-  max-width: 500px;        /* opzionale: evita che si allarghino troppo */
+  flex: 1 1 auto;
+  max-width: 500px;
   border-collapse: collapse;
   background-color: #FFFFFF;
   color: #2F2F2F;
   border-radius: 10px;
   overflow: hidden;
 }
-
 
 .tabella-extra th {
   background-color: #D0D0D0;
@@ -109,24 +107,35 @@ h1 {
   font-weight: 500;
 }
 
-/* Stile per il risultato numerico (grigio scuro) */
+/* Stile per il risultato numerico */
 .risultato-gol {
-  color: #2F2F2F; /* grigio scuro */
+  color: #2F2F2F;
   font-weight: bold;
-  background-color: #E0E0E0; /* grigio chiarissimo */
+  background-color: #E0E0E0;
   padding: 3px 6px;
   border-radius: 4px;
   display: inline-block;
   margin: 0 6px;
 }
 
+/* ⭐ SCROLL ORIZZONTALE SOLO SU MOBILE (versione corretta) */
+@media (max-width: 700px) {
+  .tabella,
+  .tabella-numerica,
+  .extra-container {
+    overflow-x: auto;
+    display: block;
+    white-space: nowrap;
+  }
+}
 </style>
 
 </head>
 <body>
-
 <div style="text-align: center; margin-bottom: 20px;">
-  <img src="logo-campionato.png" alt="Logo Campionato" style="width: 180px; height: auto;">
+  <img src="https://edoscarro.github.io/Campionato-Piccoli/logo-campionato.png"
+       alt="Logo Campionato"
+       style="width: 180px; height: auto;">
 </div>
 
 <h1>Classifica Campionato</h1>
@@ -195,7 +204,7 @@ h1 {
 <!-- RISULTATI + MARCATORI -->
 <div class="extra-container">
 
-  <!-- RISULTATI PARTITE (Opzione B) -->
+  <!-- RISULTATI PARTITE -->
   <table class="tabella-extra">
     <thead>
       <tr><th>Risultati Partite</th></tr>
@@ -203,7 +212,7 @@ h1 {
     <tbody id="tabella-risultati"></tbody>
   </table>
 
-  <!-- CLASSIFICA MARCATORI (Opzione A) -->
+  <!-- CLASSIFICA MARCATORI -->
   <table class="tabella-extra">
     <thead>
       <tr>
@@ -272,7 +281,7 @@ if (punti === 0) {
 if (indicePosizioneAttiva >= 0)
   document.getElementById(posizioni[indicePosizioneAttiva].id).classList.add("titolo-attivo");
 
-/* --- RISULTATI PARTITE (Opzione B) --- */
+/* --- RISULTATI PARTITE --- */
 const risultati = JSON.parse(localStorage.getItem("risultati_partite")) || [];
 const tabRis = document.getElementById("tabella-risultati");
 
@@ -288,7 +297,7 @@ tabRis.innerHTML = risultati
   `)
   .join("");
 
-/* --- CLASSIFICA MARCATORI (Opzione A) --- */
+/* --- CLASSIFICA MARCATORI --- */
 const marcatori = JSON.parse(localStorage.getItem("classifica_marcatori")) || [];
 const tabMarc = document.getElementById("tabella-marcatori");
 
@@ -297,6 +306,3 @@ tabMarc.innerHTML = marcatori
   .map(m => `<tr><td>${m.nome}</td><td>${m.gol}</td></tr>`)
   .join("");
 </script>
-
-</body>
-</html>
