@@ -351,15 +351,16 @@ function aggiornaMarcatore(index, dati) {
 /* --- Aggiornamento Squadra: Casa del Giovane --- */
 aggiornaSquadra({
   "nome": "Casa del Giovane",
-  "partite": 0,
-  "vittorie": 0,
-  "pareggi": 0,
+  "partite": 2,
+  "vittorie": 1,
+  "pareggi": 1,
   "sconfitte": 0,
-  "goalFatti": 0,
-  "goalSubiti": 0,
-  "punti": 0,
-  "diffReti": 0
+  "goalFatti": 2,
+  "goalSubiti": 1,
+  "punti": 4,
+  "diffReti": 1
 });
+
 /* --- Aggiornamento Risultato #0 --- */
 aggiornaRisultato(0, {
   "casa": "Tiger Novi",
@@ -367,12 +368,24 @@ aggiornaRisultato(0, {
   "trasferta": "Casa del Giovane",
   "golTrasferta": 1
 });
+/* --- Aggiornamento Risultato #1 --- */
+aggiornaRisultato(1, {
+  "casa": "Casa del Giovane",
+  "golCasa": 1,
+  "trasferta": "Lisondria",
+  "golTrasferta": 1
+});
+
 /* --- Aggiornamento Marcatore #0 --- */
 aggiornaMarcatore(0, {
   "nome": "Xhoel Doda",
   "gol": 1
 });
-
+/* --- Aggiornamento Marcatore #1 --- */
+aggiornaMarcatore(1, {
+  "nome": "Anwar Nazario",
+  "gol": 1
+});
 </script>
 
 </body>
