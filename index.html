@@ -42,34 +42,41 @@ h1 {
   text-align: center;
 }
 
-/* Ripristina i bordi della tabella grafica */
+/* Bordi tabella grafica */
 .tabella th,
 .tabella td {
   border: 1px solid #DDDDDD;
 }
 
-/* Ripristina i bordi delle celle piccole */
-#riga-punti .cella-punto {
-  border: 1px solid #DDDDDD !important;
+/* Celle piccole */
+.cella-punto {
+  background-color: #CCCCCC;
+  border: 1px solid #AAAAAA;
+  border-radius: 0;     /* angoli netti */
+  width: 40px;          /* la cella riempie tutta la colonna */
+  height: 20px;         /* rettangolo basso */
+  padding: 0;           /* evita gonfiamenti */
 }
 
-/* Celle attive */
-.attivo {
-  background-color: #2E7D32 !important;
-  border-color: #1B5E20 !important;
+
+.cella-punto.attivo {
+  background-color: #2E7D32;
+  border-color: #1B5E20;
 }
 
+/* Titolo posizione attiva */
 .titolo-attivo {
   color: #2E7D32 !important;
   font-weight: bold;
 }
 
+/* Celle numeriche attive */
 .cella-numerica-attiva {
   color: #2E7D32 !important;
   font-weight: bold;
 }
 
-/* --- SEZIONI RISULTATI E MARCATORI --- */
+/* RISULTATI E MARCATORI */
 .extra-container {
   display: flex;
   justify-content: center;
@@ -101,13 +108,11 @@ h1 {
   text-align: center;
 }
 
-/* Stile per la parte testuale (nomi squadre) */
 .risultato-squadre {
   color: #2F2F2F;
   font-weight: 500;
 }
 
-/* Stile per il risultato numerico */
 .risultato-gol {
   color: #2F2F2F;
   font-weight: bold;
@@ -118,7 +123,7 @@ h1 {
   margin: 0 6px;
 }
 
-/* ⭐ SCROLL ORIZZONTALE SOLO SU MOBILE (versione corretta) */
+/* Mobile */
 @media (max-width: 700px) {
   .tabella,
   .tabella-numerica,
@@ -129,13 +134,12 @@ h1 {
   }
 }
 </style>
-
 </head>
+
 <body>
+
 <div style="text-align: center; margin-bottom: 20px;">
-  <img src="https://edoscarro.github.io/Campionato-Piccoli/logo-campionato.png"
-       alt="Logo Campionato"
-       style="width: 180px; height: auto;">
+  <img src="logo-campionato.png" alt="Logo Campionato" style="width: 180px; height: auto;">
 </div>
 
 <h1>Classifica Campionato</h1>
@@ -179,7 +183,7 @@ h1 {
   </tr>
 
   <tr id="riga-punti">
-    <td>Casa del Giovane</td>
+    <td id="nome-squadra-grafica"></td>
 
     <td class="cella-punto"></td>
     <td class="cella-punto"></td>
@@ -204,89 +208,102 @@ h1 {
 <!-- RISULTATI + MARCATORI -->
 <div class="extra-container">
 
-  <!-- RISULTATI PARTITE -->
   <table class="tabella-extra">
-    <thead>
-      <tr><th>Risultati Partite</th></tr>
-    </thead>
+    <thead><tr><th>Risultati Partite</th></tr></thead>
     <tbody id="tabella-risultati"></tbody>
   </table>
 
-  <!-- CLASSIFICA MARCATORI -->
   <table class="tabella-extra">
-    <thead>
-      <tr>
-        <th>Giocatore</th>
-        <th>Gol</th>
-      </tr>
-    </thead>
+    <thead><tr><th>Giocatore</th><th>Gol</th></tr></thead>
     <tbody id="tabella-marcatori"></tbody>
   </table>
 
 </div>
+
 <script>
-/* --- CLASSIFICA NUMERICA --- */
-const salvata = localStorage.getItem("classifica_campionato2");
-let squadra = salvata ? JSON.parse(salvata)[0] : null;
+let CLASSIFICA = [];
+let RISULTATI = [];
+let MARCATORI = [];
 
-if (squadra) {
+/* ---------------------- */
+/*  RENDER CLASSIFICA NUMERICA */
+/* ---------------------- */
+function renderClassifica() {
   const tbody = document.getElementById("classifica-numerica-body");
-  const punti = squadra.vittorie * 3 + squadra.pareggi;
+  tbody.innerHTML = "";
 
-  tbody.innerHTML = `
-    <tr>
-      <td>${squadra.nome}</td>
-      <td>${squadra.partite}</td>
-      <td>${squadra.vittorie}</td>
-      <td>${squadra.pareggi}</td>
-      <td>${squadra.sconfitte}</td>
-      <td class="pt-cell">${punti}</td>
-      <td>${squadra.goalFatti}</td>
-      <td>${squadra.goalSubiti}</td>
-    </tr>
-  `;
+  CLASSIFICA.forEach(s => {
+    const punti = s.punti; // <-- usa i punti dei frammenti admin
 
-  document.querySelector(".pt-cell").classList.add("cella-numerica-attiva");
+    tbody.innerHTML += `
+      <tr>
+        <td>${s.nome}</td>
+        <td>${s.partite}</td>
+        <td>${s.vittorie}</td>
+        <td>${s.pareggi}</td>
+        <td>${s.sconfitte}</td>
+        <td class="pt-cell">${punti}</td>
+        <td>${s.goalFatti}</td>
+        <td>${s.goalSubiti}</td>
+      </tr>
+    `;
+  });
 }
 
-/* --- CLASSIFICA GRAFICA --- */
-let punti = squadra ? squadra.vittorie * 3 + squadra.pareggi : 0;
+/* ---------------------- */
+/*  RENDER CLASSIFICA GRAFICA */
+/* ---------------------- */
+function renderGrafica() {
 
-const celle = document.querySelectorAll("#riga-punti .cella-punto");
-for (let i = 0; i < punti && i < celle.length; i++) celle[i].classList.add("attivo");
+  if (CLASSIFICA.length === 0) return;
 
-const posizioni = [
-  { id: "titolo-pos5", celle: 3 },
-  { id: "titolo-pos4", celle: 2 },
-  { id: "titolo-pos3", celle: 2 },
-  { id: "titolo-pos2", celle: 2 },
-  { id: "titolo-pos1", celle: 3 }
-];
+  const s = CLASSIFICA[0];
+  const punti = s.punti; // <-- usa i punti dei frammenti admin
 
-let puntiRimasti = punti;
-let indicePosizioneAttiva = -1;
+  document.getElementById("nome-squadra-grafica").textContent = s.nome;
 
-for (let i = 0; i < posizioni.length; i++) {
-  if (puntiRimasti > 0) {
-    indicePosizioneAttiva = i;
-    puntiRimasti -= posizioni[i].celle;
-  } else break;
+  const celle = document.querySelectorAll("#riga-punti .cella-punto");
+  celle.forEach(c => c.classList.remove("attivo"));
+
+  for (let i = 0; i < punti && i < celle.length; i++) {
+    celle[i].classList.add("attivo");
+  }
+
+  const posizioni = [
+    { id: "titolo-pos5", celle: 3 },
+    { id: "titolo-pos4", celle: 2 },
+    { id: "titolo-pos3", celle: 2 },
+    { id: "titolo-pos2", celle: 2 },
+    { id: "titolo-pos1", celle: 3 }
+  ];
+
+  document.querySelectorAll(".titolo-attivo")
+    .forEach(t => t.classList.remove("titolo-attivo"));
+
+  let puntiRimasti = punti;
+  let indicePosizioneAttiva = -1;
+
+  for (let i = 0; i < posizioni.length; i++) {
+    if (puntiRimasti > 0) {
+      indicePosizioneAttiva = i;
+      puntiRimasti -= posizioni[i].celle;
+    } else break;
+  }
+
+  if (punti === 0) {
+    document.getElementById("titolo-pos5").classList.add("titolo-attivo");
+  }
+
+  if (indicePosizioneAttiva >= 0)
+    document.getElementById(posizioni[indicePosizioneAttiva].id).classList.add("titolo-attivo");
 }
 
-/* Caso speciale: 0 punti → evidenzia 5ª posizione */
-if (punti === 0) {
-  document.getElementById("titolo-pos5").classList.add("titolo-attivo");
-}
-
-if (indicePosizioneAttiva >= 0)
-  document.getElementById(posizioni[indicePosizioneAttiva].id).classList.add("titolo-attivo");
-
-/* --- RISULTATI PARTITE --- */
-const risultati = JSON.parse(localStorage.getItem("risultati_partite")) || [];
-const tabRis = document.getElementById("tabella-risultati");
-
-tabRis.innerHTML = risultati
-  .map(r => `
+/* ---------------------- */
+/*  RENDER RISULTATI      */
+/* ---------------------- */
+function renderRisultati() {
+  const tab = document.getElementById("tabella-risultati");
+  tab.innerHTML = RISULTATI.map(r => `
     <tr>
       <td>
         <span class="risultato-squadre">${r.casa}</span>
@@ -294,15 +311,70 @@ tabRis.innerHTML = risultati
         <span class="risultato-squadre">${r.trasferta}</span>
       </td>
     </tr>
-  `)
-  .join("");
+  `).join("");
+}
 
-/* --- CLASSIFICA MARCATORI --- */
-const marcatori = JSON.parse(localStorage.getItem("classifica_marcatori")) || [];
-const tabMarc = document.getElementById("tabella-marcatori");
+/* ---------------------- */
+/*  RENDER MARCATORI      */
+/* ---------------------- */
+function renderMarcatori() {
+  const tab = document.getElementById("tabella-marcatori");
+  tab.innerHTML = MARCATORI
+    .sort((a,b) => b.gol - a.gol)
+    .map(m => `<tr><td>${m.nome}</td><td>${m.gol}</td></tr>`)
+    .join("");
+}
 
-tabMarc.innerHTML = marcatori
-  .sort((a, b) => b.gol - a.gol)
-  .map(m => `<tr><td>${m.nome}</td><td>${m.gol}</td></tr>`)
-  .join("");
+/* ---------------------- */
+/*  FUNZIONI ADMIN        */
+/* ---------------------- */
+function aggiornaSquadra(dati) {
+  CLASSIFICA = [dati];
+  renderClassifica();
+  renderGrafica();
+}
+
+function aggiornaRisultato(index, dati) {
+  RISULTATI[index] = dati;
+  renderRisultati();
+}
+
+function aggiornaMarcatore(index, dati) {
+  MARCATORI[index] = dati;
+  renderMarcatori();
+}
 </script>
+
+
+<script>
+/* Incolla qui i frammenti admin */
+/* --- Aggiornamento Squadra: Casa del Giovane --- */
+aggiornaSquadra({
+  "nome": "Casa del Giovane",
+  "partite": 0,
+  "vittorie": 0,
+  "pareggi": 0,
+  "sconfitte": 0,
+  "goalFatti": 0,
+  "goalSubiti": 0,
+  "punti": 0,
+  "diffReti": 0
+});
+/* --- Aggiornamento Risultato #0 --- */
+aggiornaRisultato(0, {
+  "casa": "Tiger Novi",
+  "golCasa": 0,
+  "trasferta": "Casa del Giovane",
+  "golTrasferta": 1
+});
+/* --- Aggiornamento Marcatore #0 --- */
+aggiornaMarcatore(0, {
+  "nome": "Xhoel Doda",
+  "gol": 1
+});
+
+</script>
+
+</body>
+</html>
+
