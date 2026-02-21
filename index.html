@@ -351,21 +351,34 @@ function aggiornaMarcatore(index, dati) {
 /* --- Aggiornamento Squadra: Casa del Giovane --- */
 aggiornaSquadra({
   "nome": "Casa del Giovane",
-  "partite": 0,
+  "partite": 1,
   "vittorie": 0,
   "pareggi": 0,
-  "sconfitte": 0,
-  "goalFatti": 0,
-  "goalSubiti": 0,
+  "sconfitte": 1,
+  "goalFatti": 2,
+  "goalSubiti": 6,
   "punti": 0,
-  "diffReti": 0
+  "diffReti": -4
 });
 
 /* --- Aggiornamento Risultato #0 --- */
-
+aggiornaRisultato(0, {
+  "casa": "Tiger Novi",
+  "golCasa": 6,
+  "trasferta": "Casa del Giovane",
+  "golTrasferta": 2
+});
 
 /* --- Aggiornamento Marcatore #0 --- */
-
+aggiornaMarcatore(0, {
+  "nome": "Ergi Hakani ",
+  "gol": 1
+});
+/* --- Aggiornamento Marcatore #1 --- */
+aggiornaMarcatore(1, {
+  "nome": "Anwar Lakzit ",
+  "gol": 1
+});
 
 </script>
 
